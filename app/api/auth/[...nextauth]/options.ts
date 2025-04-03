@@ -35,6 +35,7 @@ const authOptions : NextAuthOptions = {
               return false;
             }
           },
+          
     }
 }
 
