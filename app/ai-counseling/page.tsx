@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Mic, Send, Bot, Volume2 } from "lucide-react";
+import CreditDisplay from "@/components/credit-display";
+import Link from "next/link";
 
 export default function AICounseling() {
   const [messages, setMessages] = useState([
@@ -12,11 +14,16 @@ export default function AICounseling() {
   ]);
   const [input, setInput] = useState("");
   const [isVoiceMode, setIsVoiceMode] = useState(false);
+  // Simulated credit state - in production, this would come from your backend
+  const [credits, setCredits] = useState(50);
+  const maxCredits = 50;
 
   const handleSend = () => {
-    if (!input.trim()) return;
+    if (!input.trim() || credits <= 0) return;
     
     setMessages(prev => [...prev, { role: "user", content: input }]);
+    setCredits(prev => Math.max(0, prev - 1)); // Deduct 1 credit per message
+    
     // Simulate AI response
     setTimeout(() => {
       setMessages(prev => [...prev, {
@@ -38,6 +45,7 @@ export default function AICounseling() {
             </CardTitle>
           </CardHeader>
           <CardContent>
+            <CreditDisplay credits={credits} maxCredits={maxCredits} />
             <div className="flex gap-4 mb-4">
               <Button
                 variant={!isVoiceMode ? "default" : "outline"}
@@ -79,23 +87,30 @@ export default function AICounseling() {
         </Card>
 
         <div className="flex gap-2">
-          {isVoiceMode ? (
-            <Button className="w-full" size="lg">
-              <Mic className="mr-2 h-4 w-4" />
-              Hold to Speak
-            </Button>
-          ) : (
-            <>
-              <Input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Type your message..."
-                onKeyPress={(e) => e.key === "Enter" && handleSend()}
-              />
-              <Button onClick={handleSend}>
-                <Send className="h-4 w-4" />
+          {credits <= 0 && (
+            <div className="w-full text-center p-2 bg-destructive/10 text-destructive rounded-lg">
+              You've run out of credits! <Link href="/pricing" className="underline">Upgrade your plan</Link> to continue.
+            </div>
+          )}
+          {credits > 0 && (
+            isVoiceMode ? (
+              <Button className="w-full" size="lg">
+                <Mic className="mr-2 h-4 w-4" />
+                Hold to Speak
               </Button>
-            </>
+            ) : (
+              <>
+                <Input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Type your message..."
+                  onKeyPress={(e) => e.key === "Enter" && handleSend()}
+                />
+                <Button onClick={handleSend}>
+                  <Send className="h-4 w-4" />
+                </Button>
+              </>
+            )
           )}
         </div>
       </div>
