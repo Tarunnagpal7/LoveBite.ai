@@ -32,8 +32,8 @@ export default function RootLayout({
           <Navbar />
           <LoadingWrapper>
           <main className="min-h-screen">{children}</main>
-          </LoadingWrapper>
           <Toaster />
+          </LoadingWrapper>
         </ThemeProvider>
         </AuthProvider>
       </body>

@@ -1,34 +1,33 @@
-import { MongoClient } from "mongodb";
 
-if (!process.env.MONGODB_URI) {
-  throw new Error('Invalid/Missing environment variable: "MONGODB_URI"');
+import mongoose from "mongoose";
+
+type ConnectedObject = {
+    isConnected ?: number;
+};
+
+
+const connection : ConnectedObject = {};
+
+async function dbConnect()  : Promise<void> {
+    // Check if we have a connection to the database
+    if(connection.isConnected){
+        console.log('Already connected to the database');
+        return;
+    }
+ 
+    try{
+    const db = await mongoose.connect(process.env.MONGODB_URI || '' , {});
+
+    connection.isConnected = db.connections[0].readyState;
+
+    console.log('Connected to database');
+
+    }catch(err){
+        throw new Error('Server Error! We are Trying to fix it')
+        console.log(err);
+        process.exit(1);
+    }
+  
 }
 
-const uri = process.env.MONGODB_URI;
-const options = {};
-
-let client;
-let clientPromise: Promise<MongoClient>;
-
-if (process.env.NODE_ENV === "development") {
-  let globalWithMongo = global as typeof globalThis & {
-    _mongoClientPromise?: Promise<MongoClient>;
-  };
-
-  if (!globalWithMongo._mongoClientPromise) {
-    client = new MongoClient(uri, options);
-    globalWithMongo._mongoClientPromise = client.connect();
-  }
-  clientPromise = globalWithMongo._mongoClientPromise;
-} else {
-  client = new MongoClient(uri, options);
-  clientPromise = client.connect();
-}
-
-export async function connectToDatabase() {
-  const client = await clientPromise;
-  const db = client.db("lovebite");
-  return { client, db };
-}
-
-export default clientPromise;
+export default dbConnect;

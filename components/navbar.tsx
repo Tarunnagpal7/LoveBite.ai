@@ -23,6 +23,7 @@ export default function Navbar() {
   const { data: session } = useSession();
   const user = session?.user as AuthUser;
   const [isOpen, setIsOpen] = useState(false);
+  console.log(session);
 
   const handleSignOut = async () => {
     try {
@@ -40,8 +41,8 @@ export default function Navbar() {
       <Link href="/compatibility" className="text-foreground/60 hover:text-foreground transition-colors">
         Compatibility Test
       </Link>
-      <Link href="/forum" className="text-foreground/60 hover:text-foreground transition-colors">
-        Forum
+      <Link href="/Q&A" className="text-foreground/60 hover:text-foreground transition-colors">
+        Q&A
       </Link>
       <Link href="/ai-counseling" className="text-foreground/60 hover:text-foreground transition-colors">
         AI Counseling
