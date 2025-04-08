@@ -6,6 +6,7 @@ interface User extends Document {
     email : string;
     image : string;
     createdAt : Date;
+    updateAt : Date;
     profileCompleted : boolean;
     googleId : string;
     streamToken : string;
@@ -20,6 +21,7 @@ const userSchema : Schema<User> = new mongoose.Schema({
    email : {type : String , required : true, unique : true},
    image : {type: String},
     createdAt : {type : Date , default : Date.now},
+    updateAt : {type : Date},
     profileCompleted : {type : Boolean , default : false},
     googleId : {type : String , required : true},
     streamToken : {type : String},

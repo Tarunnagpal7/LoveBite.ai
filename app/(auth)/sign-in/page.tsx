@@ -16,12 +16,12 @@ export default function SignIn() {
     setIsLoading(true);
     try {
       const result = await signIn("google", {
-        callbackUrl: "/compatibility",
+        callbackUrl: "/profile-complete",
         redirect: false,
       });
       
       if (result?.ok) {
-        router.push("/compatibility");
+        router.replace("/profile-complete");
       }
     } catch (error) {
       console.error("Sign in failed:", error);
