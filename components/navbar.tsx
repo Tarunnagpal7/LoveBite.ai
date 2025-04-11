@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Heart, Menu, LogOut, User, Settings,CreditCard } from "lucide-react";
+import { Heart, Menu, LogOut, User, Settings, CreditCard } from "lucide-react";
 import Link from "next/link";
 import {
   DropdownMenu,
@@ -13,17 +13,17 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { signOut, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { User as AuthUser } from "next-auth";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { NotificationBell } from "./notifications/notification-bell";
 
 export default function Navbar() {
   const router = useRouter();
+  const pathname = usePathname();
   const { data: session } = useSession();
   const user = session?.user as AuthUser;
-  const [isOpen, setIsOpen] = useState(false);
-  console.log(session);
 
   const handleSignOut = async () => {
     try {
@@ -36,35 +36,65 @@ export default function Navbar() {
     }
   };
 
+  // Helper to determine if a link is active
+  const isActive = (path: string) => {
+    return pathname === path;
+  };
+
   const NavLinks = () => (
     <>
-      <Link href="/compatibility" className="text-foreground/60 hover:text-foreground transition-colors">
-        Compatibility Test
+      <Link 
+        href="/compatibility" 
+        className={`transition-colors ${
+          isActive('/compatibility') 
+            ? "text-primary font-medium" 
+            : "text-foreground/60 hover:text-foreground"
+        }`}
+      >
+        Compatibility
       </Link>
-      <Link href="/Q&A" className="text-foreground/60 hover:text-foreground transition-colors">
+      <Link 
+        href="/Q&A" 
+        className={`transition-colors ${
+          isActive('/Q&A') 
+            ? "text-primary font-medium" 
+            : "text-foreground/60 hover:text-foreground"
+        }`}
+      >
         Q&A
       </Link>
-      <Link href="/ai-counseling" className="text-foreground/60 hover:text-foreground transition-colors">
-        AI Counseling
+      <Link 
+        href="/ai-counseling" 
+        className={`transition-colors ${
+          isActive('/ai-counseling') 
+            ? "text-primary font-medium" 
+            : "text-foreground/60 hover:text-foreground"
+        }`}
+      >
+        AI-Counseling
       </Link>
     </>
   );
 
   return (
-    <nav className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <nav className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
-          <Link href="/" className="flex items-center space-x-2">
+          <Link 
+            href="/" 
+            className="flex items-center space-x-2"
+          >
             <Heart className="h-6 w-6 text-primary" />
             <span className="font-bold text-xl">LoveBite.ai</span>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
+         { session &&   <div className="hidden md:flex items-center space-x-6">
             <NavLinks />
-          </div>
+          </div>}
 
           <div className="flex items-center space-x-4">
+            {session && <NotificationBell />}
             {/* User Menu */}
             {session ? (
               <DropdownMenu>
@@ -89,16 +119,16 @@ export default function Navbar() {
                   <DropdownMenuItem>
                     <User className="mr-2 h-4 w-4" />
                     <Link href='/profile'>
-                    <span>Profile</span>
+                      <span>Profile</span>
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  {/* <DropdownMenuItem>
                     <Settings className="mr-2 h-4 w-4" />
                     <span>Settings</span>
-                  </DropdownMenuItem>
+                  </DropdownMenuItem> */}
                   <DropdownMenuItem>
                     <CreditCard className="mr-2 h-4 w-4" />
-                    <span onClick={()=>router.push('/pricing')}>Credits</span>
+                    <span onClick={() => router.push('/pricing')}>Credits</span>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem 
@@ -117,7 +147,7 @@ export default function Navbar() {
             )}
 
             {/* Mobile Menu Button */}
-            <div className="md:hidden">
+          {  session && <div className="md:hidden">
               <Sheet>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="icon">
@@ -136,7 +166,7 @@ export default function Navbar() {
                   </nav>
                 </SheetContent>
               </Sheet>
-            </div>
+            </div>}
           </div>
         </div>
       </div>

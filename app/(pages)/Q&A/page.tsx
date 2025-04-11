@@ -11,9 +11,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MessageCircle, ThumbsUp } from "lucide-react";
+import { MessageCircle, ThumbsUp, ChevronLeft, ChevronRight } from "lucide-react";
 import { QuestionFormData, questionSchema } from "@/schemas/questionsForm";
-import { Question, Reaction } from "@/models/Questions";
+import { Question } from "@/models/Questions";
 import { format } from "date-fns";
 import axios from 'axios';
 import { toast } from "sonner";
@@ -26,9 +26,15 @@ export default function Page() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [isSubmitting,setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalQuestions, setTotalQuestions] = useState(0);
+  const questionsPerPage = 5;
 
   const form = useForm<QuestionFormData>({
     resolver: zodResolver(questionSchema),
@@ -39,16 +45,20 @@ export default function Page() {
   });
 
   useEffect(() => {
-    fetchQuestions();
-  }, []);
+    fetchQuestions(searchTerm, currentPage);
+  }, [currentPage]);
 
-  const fetchQuestions = async (search = "") => {
+  const fetchQuestions = async (search = "", page = 1) => {
     try {
       setLoading(true);
       const response = await axios.get('/api/questions', {
-        params: { search, page: 1, limit: 10 }
+        params: { search, page, limit: questionsPerPage }
       });
+      
       setQuestions(response.data.questions);
+      setTotalPages(response.data.pages);
+      setTotalQuestions(response.data.total);
+      setCurrentPage(response.data.currentPage);
     } catch (error) {
       console.error("Error fetching questions:", error);
       toast.error("Failed to fetch questions");
@@ -59,7 +69,13 @@ export default function Page() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    fetchQuestions(searchTerm);
+    setCurrentPage(1); // Reset to first page on new search
+    fetchQuestions(searchTerm, 1);
+  };
+
+  const changePage = (page: number) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
   };
 
   const onSubmit = async (data: QuestionFormData) => {
@@ -68,7 +84,6 @@ export default function Page() {
       toast.error("You must be logged in to post a question");
       return;
     }
-
 
     try {
       const response = await axios.post('/api/questions', {
@@ -85,12 +100,29 @@ export default function Page() {
     } catch (error) {
       toast.error('Failed to post question');
       console.error("Error submitting question:", error);
-    }
-    finally{
+    } finally {
       setIsSubmitting(false);
     }
   };
 
+  // Generate an array of page numbers to display
+  const getPageNumbers = () => {
+    const pageNumbers = [];
+    const maxPagesToShow = 5;
+    
+    let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+    let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+    
+    if (endPage - startPage + 1 < maxPagesToShow) {
+      startPage = Math.max(1, endPage - maxPagesToShow + 1);
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(i);
+    }
+    
+    return pageNumbers;
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -152,7 +184,9 @@ export default function Page() {
                     <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
                       Cancel
                     </Button>
-                    <Button disabled={isSubmitting} type="submit"> {!isSubmitting ? "Post Question": <Loader2 className="h-6 m-auto w-12 animate-spin text-white-600 mb-4 "/> }</Button>
+                    <Button disabled={isSubmitting} type="submit"> 
+                      {!isSubmitting ? "Post Question": <Loader2 className="h-6 m-auto w-12 animate-spin text-white-600 mb-4 "/>}
+                    </Button>
                   </div>
                 </form>
               </Form>
@@ -184,10 +218,12 @@ export default function Page() {
               <Card key={question._id?.toString()} className="hover:shadow-lg transition-shadow">
                 <CardHeader>
                   <div className="flex items-start gap-4">
-                    <Avatar>
-                      <AvatarImage src={question.author.image} alt={question.author.name} />
-                      <AvatarFallback>{question.author.name[0]}</AvatarFallback>
-                    </Avatar>
+                    <Link href={`/profile/${question.author._id}`}>
+                      <Avatar>
+                        <AvatarImage src={question.author.image} alt={question.author.name} />
+                        <AvatarFallback>{question.author.name[0]}</AvatarFallback>
+                      </Avatar>
+                    </Link>
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
                         <span>{question.author.name}</span>
@@ -214,28 +250,71 @@ export default function Page() {
                   <div className="flex gap-4">
                     <Button variant="ghost" size="sm" className="gap-2">
                       <ThumbsUp className="h-4 w-4" />
-                      {question.upvotes.length}
+                      {question.upvotes?.length || 0}
                     </Button>
                     <Button variant="ghost" size="sm" className="gap-2">
                       <MessageCircle className="h-4 w-4" />
-                      {question.answers.length} Answers
+                      {question.answers?.length || 0} Answers
                     </Button>
                   </div>
                   <div className="flex gap-1">
-                    
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="px-2 hover:bg-secondary"
-                      >
-                        <Link href={`/Q&A/${question._id}`}>
-                         View Response
-                        </Link>
-                      </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="px-2 hover:bg-secondary"
+                    >
+                      <Link href={`/Q&A/${question._id}`}>
+                        View Response
+                      </Link>
+                    </Button>
                   </div>
                 </CardFooter>
               </Card>
             ))
+          )}
+          
+          {/* Pagination Controls */}
+          {!loading && questions.length > 0 && (
+            <div className="flex justify-center items-center mt-8 space-x-2">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => changePage(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                <ChevronLeft className="h-4 w-4" />
+                Previous
+              </Button>
+              
+              {getPageNumbers().map(number => (
+                <Button
+                  key={number}
+                  variant={currentPage === number ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => changePage(number)}
+                  className="min-w-[40px]"
+                >
+                  {number}
+                </Button>
+              ))}
+              
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => changePage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                Next
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
+          
+          {!loading && questions.length > 0 && (
+            <p className="text-center text-sm text-muted-foreground mt-2">
+              Showing {(currentPage - 1) * questionsPerPage + 1}-
+              {Math.min(currentPage * questionsPerPage, totalQuestions)} of {totalQuestions} questions
+            </p>
           )}
         </div>
       </div>

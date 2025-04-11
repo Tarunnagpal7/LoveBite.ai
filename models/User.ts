@@ -27,7 +27,7 @@ const userSchema : Schema<User> = new mongoose.Schema({
     streamToken : {type : String},
     age : {type : Number},
     gender : {type : String, enum :['male','female']},
-    inRelation : {type : String, enum : ['single','in a relationship','married']},
+    inRelation : {type : String, enum : ['single','in a relationship']},
     zodiacSign : {type : String, enum : ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces']}
 })
 

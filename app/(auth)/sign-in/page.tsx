@@ -21,7 +21,7 @@ export default function SignIn() {
       });
       
       if (result?.ok) {
-        router.replace("/profile-complete");
+        router.replace("/dashboard");
       }
     } catch (error) {
       console.error("Sign in failed:", error);

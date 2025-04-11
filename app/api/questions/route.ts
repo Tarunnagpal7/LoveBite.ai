@@ -55,7 +55,7 @@ export async function GET(req: Request) {
     
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "10");
+    const limit = parseInt(searchParams.get("limit") || "5"); // Default to 5 questions per page
     const search = searchParams.get("search") || "";
 
     const query = search
@@ -72,14 +72,19 @@ export async function GET(req: Request) {
         .find(query)
         .sort({ createdAt: -1 })
         .skip(skip)
-        .limit(limit),
+        .limit(limit)
+        .populate('author', 'name image')
+        .lean(),
       questionModel.countDocuments(query),
     ]);
 
     return NextResponse.json({
       questions,
       total,
+      currentPage: page,
       pages: Math.ceil(total / limit),
+      hasNextPage: page < Math.ceil(total / limit),
+      hasPrevPage: page > 1
     });
   } catch (error) {
     console.error("Error fetching questions:", error);

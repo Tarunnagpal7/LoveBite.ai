@@ -6,7 +6,7 @@ import { Toaster } from '@/components/ui/toaster';
 import Navbar from '@/components/navbar';
 import AuthProvider from '@/components/auth-provider';
 import LoadingWrapper from '@/components/LaodingWrapper';
-
+import { NotificationProvider } from '@/contexts/notification-context';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
@@ -29,11 +29,13 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
           >
+          <NotificationProvider >
           <Navbar />
           <LoadingWrapper>
           <main className="min-h-screen">{children}</main>
           <Toaster />
           </LoadingWrapper>
+          </NotificationProvider>
         </ThemeProvider>
         </AuthProvider>
       </body>
