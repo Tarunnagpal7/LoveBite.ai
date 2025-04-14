@@ -26,7 +26,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FeedbackFormData, feedbackFormSchema } from "@/schemas/feedbackForm";
 import {toast} from "sonner";
 
-export function AuthenticatedHome() {
+ function AuthenticatedHome() {
   const { data: session } = useSession();
   const user = session?.user as AuthUser;
   const [isSubmitting, setIsSubmitting] = useState(false);
