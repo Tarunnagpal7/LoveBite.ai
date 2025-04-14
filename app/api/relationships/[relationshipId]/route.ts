@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 import relationshipModel from "@/models/Relationship";
 import notificationModel from "@/models/Notification";
 import userModel from "@/models/User";
+export const dynamic = 'force-dynamic';
 
 export async function PATCH(
   req: Request,

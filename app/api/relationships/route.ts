@@ -5,6 +5,7 @@ import authOptions from "../auth/[...nextauth]/options";
 import relationshipModel from "@/models/Relationship";
 import { Relationship } from "@/models/Relationship";
 import notificationModel from "@/models/Notification";
+export const dynamic = 'force-dynamic';
 
 // Send relationship request
 export async function POST(req: Request) {

@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth";
 import userModel from "@/models/User";
 import {  NextResponse } from "next/server";
 import mongoose from "mongoose";
+export const dynamic = 'force-dynamic';
 
 export async function GET(req : Request){
    try{
