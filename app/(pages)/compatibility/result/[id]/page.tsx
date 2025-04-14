@@ -187,6 +187,7 @@ export default function CompatibilityResults() {
                 </div>
                 <Progress 
                   value={results.score} 
+                  max={100}
                   className="h-3 w-full"
                 />
               </div>
