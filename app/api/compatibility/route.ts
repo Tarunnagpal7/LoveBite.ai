@@ -5,7 +5,7 @@ import authOptions from "../auth/[...nextauth]/options";
 import { getServerSession } from "next-auth";
 import mongoose from "mongoose";
 import relationshipModel from "@/models/Relationship";
-
+export const dynamic = 'force-dynamic';
 export async function GET(req : Request){
     try{
         await dbConnect();
@@ -30,7 +30,7 @@ export async function GET(req : Request){
         if(!compatibility){
             return NextResponse.json({
                 error : "compatibility not found",success : false
-            })
+            },{status : 404})
         }
         const relationship = await relationshipModel.findById(compatibility.relationshipId);
         if(!relationship){
@@ -50,6 +50,6 @@ export async function GET(req : Request){
         console.log(error)
         return NextResponse.json({
             error : "compatibility fetching error",success : false
-        })
+        },{status : 400})
     }
 }

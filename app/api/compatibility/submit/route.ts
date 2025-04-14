@@ -8,7 +8,7 @@ import resultModel from "@/models/ResultInsights";
 import axios from "axios";
 import relationshipModel from "@/models/Relationship";
 import mongoose from "mongoose";
-
+export const dynamic = 'force-dynamic';
 export async function POST(req: Request) {
   try {
     await dbConnect();

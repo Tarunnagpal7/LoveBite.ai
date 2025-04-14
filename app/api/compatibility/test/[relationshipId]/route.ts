@@ -5,7 +5,7 @@ import authOptions from "@/app/api/auth/[...nextauth]/options";
 import compatibilityModel from "@/models/Compatibility";
 import testresponseModel from "@/models/TestResponse";
 import mongoose from "mongoose";
-
+export const dynamic = 'force-dynamic';
 export async function GET(
   req: Request,
   { params }: { params: Promise<{ relationshipId: string }>}

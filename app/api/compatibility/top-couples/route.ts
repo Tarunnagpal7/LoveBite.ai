@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/mongodb";
 import compatibilityModel from "@/models/Compatibility";
-
+export const dynamic = 'force-dynamic';
 export async function GET() {
   try {
     await dbConnect();

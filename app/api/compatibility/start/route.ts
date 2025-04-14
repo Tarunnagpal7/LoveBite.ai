@@ -3,7 +3,7 @@ import dbConnect from "@/lib/mongodb";
 import { getServerSession } from "next-auth";
 import authOptions from "../../auth/[...nextauth]/options";
 import compatibilityModel from "@/models/Compatibility";
-
+export const dynamic = 'force-dynamic';
 export async function POST(req: Request) {
   try {
     await dbConnect();
@@ -31,7 +31,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ 
       success: true,
       compatibilityId: compatibility._id 
-    });
+    },{status : 200});
 
   } catch (error) {
     console.error("Error starting compatibility test:", error);
