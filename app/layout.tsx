@@ -12,6 +12,9 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: 'LoveBite.ai - Relationship Compatibility Testing',
   description: 'Discover your relationship compatibility with AI-powered insights',
+  icons: {
+    icon: '/lovebite.jpg',
+  },
 };
 
 export default function RootLayout({
