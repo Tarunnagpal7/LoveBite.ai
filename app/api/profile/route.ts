@@ -5,7 +5,7 @@ import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import relationshipModel from "@/models/Relationship";
 import questionModel from "@/models/Questions";
-
+export const dynamic = 'force-dynamic';
 export async function GET() {
     try {
         await dbConnect();
