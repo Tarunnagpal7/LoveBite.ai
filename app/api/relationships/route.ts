@@ -46,7 +46,7 @@ export async function POST(req: Request) {
     });
 
     if (existingRelationship) {
-      console.log("existed")
+      // console.log("existed")
       return NextResponse.json(
         { message : "User is in relationship with someone! request cannot be sended",
             success : false
@@ -71,7 +71,7 @@ export async function POST(req: Request) {
     })
 
     if(pendingRelationship){
-      console.log('pending')
+      // console.log('pending')
       return NextResponse.json({
         message : "Request is pending",
         success : false,

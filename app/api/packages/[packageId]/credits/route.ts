@@ -19,13 +19,20 @@ export async function POST(req:Request,
             })
         }
         const {packageId} = await params
-        console.log(packageId)
+        // console.log(packageId)
 
         const packages = await packageModle.findById({_id : packageId});
         if(!packages){
             return NextResponse.json({
                 message : "Package not found",
                 success : false
+            })
+        }
+         
+        const existUser = await creditModel.findOne({userId : session.user._id});
+        if(existUser){
+            return NextResponse.json({
+                existed : true
             })
         }
 

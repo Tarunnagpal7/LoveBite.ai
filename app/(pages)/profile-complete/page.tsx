@@ -146,8 +146,9 @@ export default function ProfileComplete() {
                             type="number"
                             placeholder="Enter your age"
                             {...field}
+                            value={field.value || ''}  // Initialize with empty string if undefined
                             onChange={(e) => {
-                              const value = e.target.value ? parseInt(e.target.value) : undefined;
+                              const value = e.target.value ? parseInt(e.target.value) : '';
                               field.onChange(value);
                             }}
                           />

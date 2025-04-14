@@ -95,7 +95,7 @@ export default function Page() {
         setIsDialogOpen(false);
         form.reset();
         fetchQuestions(); // Refresh questions list
-        router.replace(`/@&A/${response.data.questionId}`); 
+        router.replace(`/Q&A/${response.data.questionId}`); 
       }
     } catch (error) {
       toast.error('Failed to post question');

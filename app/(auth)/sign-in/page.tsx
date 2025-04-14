@@ -7,10 +7,12 @@ import { Heart } from "lucide-react";
 import LoadingWrapper from "@/components/LaodingWrapper";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useNotifications } from "@/contexts/notification-context";
 
 export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const {addNotification} = useNotifications();
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
@@ -21,7 +23,8 @@ export default function SignIn() {
       });
       
       if (result?.ok) {
-        router.replace("/dashboard");
+        addNotification('Welcome to LoveBite!')
+        router.replace("/profile-complete");
       }
     } catch (error) {
       console.error("Sign in failed:", error);

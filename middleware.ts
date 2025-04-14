@@ -11,7 +11,7 @@ export async function middleware(request: NextRequest) {
 
   // Redirect to dashboard if the user is already authenticated
   // and trying to access sign-in page
-  if (token && url.pathname.startsWith('/sign-in')) {
+  if (token && (url.pathname.startsWith('/sign-in')  )) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
@@ -26,6 +26,8 @@ export async function middleware(request: NextRequest) {
     }
     // else return NextResponse.redirect(new URL('/profile-complete', request.url));
   }
+
+  
 
   // Redirect unauthenticated users trying to access protected routes
   if (!token && (

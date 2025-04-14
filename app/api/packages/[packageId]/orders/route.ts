@@ -22,7 +22,7 @@ export async function POST(req : Request,
           })
         }
         const {packageId} = await params;
-        console.log(packageId)
+        // console.log(packageId)
         const databasePackageId = new mongoose.Types.ObjectId(packageId);
 
         const packages = await packageModle.findById({_id : databasePackageId});
@@ -43,7 +43,7 @@ export async function POST(req : Request,
           receipt: `order_${Date.now()}`,
         });
 
-        console.log(razorpayOrder)
+        // console.log(razorpayOrder)
 
         if(!razorpayOrder){
           return NextResponse.json({
@@ -59,7 +59,7 @@ export async function POST(req : Request,
           amount : amount / 100,
         })
 
-        console.log(creditOrder)
+        // console.log(creditOrder)
 
 
         await creditOrder.save();

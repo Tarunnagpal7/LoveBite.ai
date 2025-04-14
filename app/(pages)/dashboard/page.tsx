@@ -49,7 +49,7 @@ export function AuthenticatedHome() {
   const fetchExistingFeedback = async () => {
     try {   
       const response = await axios.get('/api/feedback');
-      console.log(response.data);
+      // console.log(response.data);
       
       // Fix the inconsistent property name (feedback vs feedbacks)
       

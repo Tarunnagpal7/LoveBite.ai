@@ -163,16 +163,6 @@ export default function PublicProfilePage() {
                   <Mail className="h-4 w-4" />
                   <p>{profile?.email}</p>
                 </div>
-                <div className="flex gap-4 mt-4 justify-center md:justify-start">
-                  <Button variant="secondary" size="sm" className="rounded-full px-4">
-                    <Star className="h-4 w-4 mr-2" />
-                    Favorites
-                  </Button>
-                  <Button variant="secondary" size="sm" className="rounded-full px-4">
-                    <Palette className="h-4 w-4 mr-2" />
-                    Themes
-                  </Button>
-                </div>
               </div>
             </div>
           </CardContent>

@@ -4,10 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Heart, ArrowRight, Users, MessageCircle, Brain, X, Mail } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export default function Home() {
   const route = useRouter();
   const [showLearnMore, setShowLearnMore] = useState(false);
+  const {data : session} = useSession();
+
+  if(session?.user){
+     route.push('/dashboard')
+  }
   
   return (
     <div className="min-h-screen">

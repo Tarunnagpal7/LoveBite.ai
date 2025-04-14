@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Mic, Send, Bot, Volume2, RefreshCw } from "lucide-react";
 import CreditDisplay from "@/components/credit-display";
-import Link from "next/link";
 import axios from "axios";
 import { cn } from "@/lib/utils";
 import ReactMarkdown from "react-markdown";

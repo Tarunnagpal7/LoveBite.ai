@@ -88,7 +88,7 @@ export default function Pricing() {
       const response = await axios.get('/api/packages');
       if(response.data.success) {
         setPlans(response.data.packages);
-        console.log(response.data.packages);
+        // console.log(response.data.packages);
       }
     } catch(error) {
       console.log("packages fetching error : ", error);
@@ -108,11 +108,15 @@ export default function Pricing() {
       // Call API to activate free plan
       const packageId = plan._id
       const response = await axios.post(`/api/packages/${packageId}/credits`);
+
+      if(response.data.existed){
+        showNotification('Free plan is already created',false)
+        return;
+      }
       
       if (response.data.success) {
         // Show success message
         showNotification(`Free  plan activated successfully!`, true);
-        
         // Redirect to dashboard
         setTimeout(() => {
           router.replace('/dashboard');
@@ -158,6 +162,7 @@ export default function Pricing() {
   };
 
   const handlePaymentConfirm = async () => {
+    setIsConfirmationOpen(false)
     if (selectedPlan) {
       setIsRazorpayOpen(true);
     }

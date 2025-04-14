@@ -130,7 +130,7 @@ export function NotificationList() {
   };
 
   return (
-    <ScrollArea className="h-[300px]">
+    <ScrollArea className="h-[400px]">
       <div className="p-4 space-y-4">
         {notifications.map((notification) => {
           const id = notification._id?.toString() || "";

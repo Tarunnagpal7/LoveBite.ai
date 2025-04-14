@@ -18,9 +18,9 @@ import type { ProfileFormData } from "@/schemas/profileSchema";
 import axios from "axios";
 import { toast } from "sonner";
 import Loading from "@/components/Loading";
-import { Separator } from "@/components/ui/separator";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import Link from "next/link";
+import { useNotifications } from "@/contexts/notification-context";
 
 interface Profile {
   age?: number;
@@ -49,7 +49,7 @@ interface Question {
 export default function ProfilePage() {
   const router = useRouter();
   const { data: session, update } = useSession();
-  const [isEditing, setIsEditing] = useState(false);
+  // const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEndingRelationship, setIsEndingRelationship] = useState(false);
@@ -58,6 +58,7 @@ export default function ProfilePage() {
   const [currentRelationship, setCurrentRelationship] = useState<Relationship | null>(null);
   const [relationshipHistory, setRelationshipHistory] = useState<Relationship[]>([]);
   const [questions, setQuestions] = useState<Question[]>([]);
+  const { addNotification } = useNotifications();
 
   const badges = [
     { name: "New Member", color: "bg-emerald-500" },
@@ -65,20 +66,20 @@ export default function ProfilePage() {
     { name: "Trendsetter", color: "bg-purple-500" }
   ];
 
-  const form = useForm<ProfileFormData>({
-    resolver: zodResolver(profileSchema),
-    defaultValues: {
-      age: undefined,
-      gender: undefined,
-      zodiacSign: undefined,
-    },
-  });
+  // const form = useForm<ProfileFormData>({
+  //   resolver: zodResolver(profileSchema),
+  //   defaultValues: {
+  //     age: undefined,
+  //     gender: undefined,
+  //     zodiacSign: undefined,
+  //   },
+  // });
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const response = await axios.get('/api/profile');
-        console.log(response)
+        // console.log(response)
         if (response.data.success) {
           setProfile(response.data.profile);
           
@@ -97,11 +98,11 @@ export default function ProfilePage() {
           }
           
           // Update form with fetched data
-          form.reset({
-            age: response.data.profile.age,
-            gender: response.data.profile.gender,
-            zodiacSign: response.data.profile.zodiacSign,
-          });
+          // form.reset({
+          //   age: response.data.profile.age,
+          //   gender: response.data.profile.gender,
+          //   zodiacSign: response.data.profile.zodiacSign,
+          // });
         }
       } catch (error) {
         console.error("Error fetching profile:", error);
@@ -114,7 +115,7 @@ export default function ProfilePage() {
     if (session?.user) {
       fetchProfile();
     }
-  }, [session, form]);
+  }, [session]);
 
   // Cycle through badges
   useEffect(() => {
@@ -129,23 +130,23 @@ export default function ProfilePage() {
     "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"
   ];
 
-  const onSubmit = async (data: ProfileFormData) => {
-    setIsLoading(true);
-    try {
-      const response = await axios.post("/api/profile/update", data);
-      if (response.data.success) {
-        await update();
-        setProfile(data);
-        setIsEditing(false);
-        toast.success("Profile updated successfully!");
-      }
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      toast.error("Failed to update profile");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // const onSubmit = async (data: ProfileFormData) => {
+  //   setIsLoading(true);
+  //   try {
+  //     const response = await axios.post("/api/profile/update", data);
+  //     if (response.data.success) {
+  //       await update();
+  //       setProfile(data);
+  //       setIsEditing(false);
+  //       toast.success("Profile updated successfully!");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error updating profile:", error);
+  //     toast.error("Failed to update profile");
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   const handleEndRelationship = async () => {
     if (!currentRelationship?._id) return;
@@ -157,7 +158,7 @@ export default function ProfilePage() {
       });
       
       if (response.data.success) {
-        toast.success("Relationship ended");
+        await addNotification("Relationship ended");
         // Update the relationship history
         if (currentRelationship) {
           setRelationshipHistory(prev => [currentRelationship, ...prev]);
@@ -172,7 +173,7 @@ export default function ProfilePage() {
       }
     } catch (error) {
       console.error("Error ending relationship:", error);
-      toast.error("Failed to end relationship");
+      await addNotification("Failed to end relationship");
     } finally {
       setIsEndingRelationship(false);
     }
@@ -256,18 +257,8 @@ export default function ProfilePage() {
                   <Mail className="h-4 w-4" />
                   <p>{user?.email}</p>
                 </div>
-                <div className="flex gap-4 mt-4 justify-center md:justify-start">
-                  <Button variant="secondary" size="sm" className="rounded-full px-4">
-                    <Star className="h-4 w-4 mr-2" />
-                    Favorites
-                  </Button>
-                  <Button variant="secondary" size="sm" className="rounded-full px-4">
-                    <Palette className="h-4 w-4 mr-2" />
-                    Themes
-                  </Button>
-                </div>
               </div>
-              <Dialog open={isEditing} onOpenChange={setIsEditing}>
+              {/* <Dialog open={isEditing} onOpenChange={setIsEditing}>
                 <DialogTrigger asChild>
                   <Button variant="outline" className="gap-2 rounded-full bg-white/10 backdrop-blur-sm border border-primary/20 hover:bg-white/20 transition-all">
                     <Edit2 className="h-4 w-4" />
@@ -355,7 +346,7 @@ export default function ProfilePage() {
                     </form>
                   </Form>
                 </DialogContent>
-              </Dialog>
+              </Dialog> */}
             </div>
           </CardContent>
         </Card>

@@ -56,37 +56,38 @@ export async function PATCH(
         );
       }
     
-
-    const checkUserIsInRelation = await relationshipModel.findOne({
-      "$or": [{
-        user_sender_id: session.user._id,
-        status: "accepted",
-      }, {
-        user_receiver_id: session.user._id,
-        status: "accepted"
-      }]
-    });
-      
-    if (checkUserIsInRelation) {
-      return NextResponse.json(
-        { message: "You are in relationship with someone ", success: false },
-        { status: 404 }
-      );
+      const checkUserIsInRelation = await relationshipModel.findOne({
+        "$or": [{
+          user_sender_id: session.user._id,
+          status: "accepted",
+        }, {
+          user_receiver_id: session.user._id,
+          status: "accepted"
+        }]
+      });
+        
+      if (checkUserIsInRelation) {
+        return NextResponse.json(
+          { message: "You are in relationship with someone ", success: false },
+          { status: 404 }
+        );
+      }
     }
 
-
     // Update relationship status
-    await relationshipModel.updateOne(
+    const result = await relationshipModel.updateOne(
       { _id: databaseRelationshipId },
       {
         $set: {
-          status: status,
+          status,
           updatedAt: new Date()
         }
       }
     );
-
-  }
+    
+    if (result.modifiedCount === 0) {
+      console.log("No document was updated. Check if the ID is correct.");
+    }
 
     // Determine user status based on relationship status
     let userStatus = 'single';
@@ -159,6 +160,7 @@ export async function PATCH(
     );
   }
 }
+
 export async function DELETE(
   req: Request,
   { params }: { params: Promise<{ relationshipId: string }>}
@@ -173,7 +175,7 @@ export async function DELETE(
     const {relationshipId } = await params
     const databaseRelationshipId = new mongoose.Types.ObjectId(relationshipId)
 
-    const relationship = await relationshipModel.findById({_id : relationshipId});
+    const relationship = await relationshipModel.findById({_id : databaseRelationshipId});
 
     if(!relationship){
         return NextResponse.json({
@@ -200,6 +202,42 @@ export async function DELETE(
     return NextResponse.json({ messgae : "request declined",success: true });
   } catch (error) {
     console.error("Error updating relationship:", error);
+    return NextResponse.json(
+      { message : "Failed to update relationship" ,success : false},
+      { status: 500 }
+    );
+  }
+}
+
+
+
+export async function GET(
+  req: Request,
+  { params }: { params: Promise<{ relationshipId: string }>}
+) {
+  try {
+    await dbConnect();
+    const session = await getServerSession(authOptions);
+    if (!session?.user) {
+      return NextResponse.json({ message: "Unauthorized", success : false }, { status: 401 });
+    }
+
+    const {relationshipId } = await params
+    const databaseRelationshipId = new mongoose.Types.ObjectId(relationshipId)
+
+    const relationship = await relationshipModel.findById({_id : databaseRelationshipId});
+
+    if(!relationship){
+        return NextResponse.json({
+            message : "relationship not existed",
+            success : false
+        })
+    }
+    
+
+    return NextResponse.json({relationship , messgae : "request declined",success: true });
+  } catch (error) {
+    console.error("Error fetching relationship:", error);
     return NextResponse.json(
       { message : "Failed to update relationship" ,success : false},
       { status: 500 }

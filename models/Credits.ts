@@ -6,14 +6,16 @@ export interface Credit extends Document{
    userId : string;
    currentPlan : string;
    createdAt : Date;
+   updateAt : Date;
 }
 
 
 const creditSchema : Schema<Credit> = new mongoose.Schema({
-    remaining : {type : Number, required : true},
-    userId : {type : String, required : true},
-    currentPlan : {type : String, required : true},
-    createdAt : {type : Date , default : Date.now()}
+    remaining : {type : Number},
+    userId : {type : String},
+    currentPlan : {type : String},
+    createdAt : {type : Date , default : Date.now()},
+    updateAt : {type : Date}
 })
 
 
