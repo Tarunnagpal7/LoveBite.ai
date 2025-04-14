@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Heart, ArrowLeft, Lightbulb, AlertCircle, Check } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Progress } from "@/components/ui/progress";
+import { SimpleProgress as Progress } from "@/components/Progress";
 import { useNotifications } from "@/contexts/notification-context";
 import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
