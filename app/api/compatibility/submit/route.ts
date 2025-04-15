@@ -100,6 +100,7 @@ export async function POST(req: Request) {
       
       // Get analysis from Gemini
       const analysisResult = await getGeminiAnalysis(allResponses);
+      console.log(analysisResult)
       
       const { score, strengths, weaknesses, suggestions } = analysisResult;
 
@@ -252,12 +253,6 @@ async function generateGeminiAnalysis(
     // Generate analysis
     const result = await model.generateContent({
       contents: [{ role: "user", parts: [{ text: geminiPrompt }] }],
-      generationConfig: {
-        temperature: 0.7,
-        topP: 0.95,
-        topK: 40,
-        maxOutputTokens: 1024,
-      }
     });
     
     const responseText = result.response.text();

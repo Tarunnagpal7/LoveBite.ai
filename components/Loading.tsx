@@ -1,3 +1,4 @@
+// filepath: c:\Users\Hp\Desktop\project\components\loading.tsx
 import React, { useEffect, useState } from 'react';
 import { Heart } from 'lucide-react';
 
@@ -5,44 +6,46 @@ const Loading = () => {
   const [hearts, setHearts] = useState<Array<{ id: number, left: number, duration: number, size: number, delay: number }>>([]);
 
   useEffect(() => {
+    // Create initial hearts
     const initialHearts = Array.from({ length: 15 }, (_, i) => ({
       id: i,
-      left: 5 + Math.random() * 90, // avoid going too close to the edges
-      duration: 3 + Math.random() * 4,
-      size: 16 + Math.random() * 24, // in px (16px to 40px)
-      delay: Math.random() * 2,
+      left: Math.random() * 100, // random horizontal position (0-100%)
+      duration: 3 + Math.random() * 4, // random animation duration (3-7s)
+      size: 4 + Math.random() * 8, // random size (4-12)
+      delay: Math.random() * 2, // random delay (0-2s)
     }));
-
+    
     setHearts(initialHearts);
-
+    
+    // Add new hearts periodically
     const interval = setInterval(() => {
       setHearts(prev => [
         ...prev,
         {
           id: Date.now(),
-          left: 5 + Math.random() * 90,
+          left: Math.random() * 100,
           duration: 3 + Math.random() * 4,
-          size: 16 + Math.random() * 24,
+          size: 4 + Math.random() * 8,
           delay: 0,
         }
       ]);
     }, 1000);
-
+    
     return () => clearInterval(interval);
   }, []);
-
+  
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen relative overflow-hidden">
+    <div className="flex flex-col items-center justify-center min-h-screen  overflow-hidden">
       {/* Main loading indicator */}
       <div className="z-10">
         <Heart className="h-16 w-16 text-primary animate-pulse" />
         <p className="mt-4 text-primary font-medium text-lg animate-pulse">Loading...</p>
       </div>
-
+      
       {/* Floating hearts */}
-      <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute inset-0">
         {hearts.map((heart) => (
-          <div
+          <div 
             key={heart.id}
             className="absolute opacity-0"
             style={{
@@ -54,19 +57,15 @@ const Loading = () => {
               `,
             }}
           >
-            <Heart
-              fill="currentColor"
-              className="text-primary/40"
-              style={{
-                width: `${heart.size}px`,
-                height: `${heart.size}px`,
-              }}
+            <Heart 
+              fill="currentColor" 
+              className={`w-${Math.round(heart.size)} h-${Math.round(heart.size)} text-primary/40`} 
             />
           </div>
         ))}
       </div>
-
-      {/* CSS Animations */}
+      
+      {/* CSS animations */}
       <style jsx>{`
         @keyframes float-up {
           0% {
@@ -88,7 +87,7 @@ const Loading = () => {
             transform: translateY(-100vh) rotate(0deg);
           }
         }
-
+        
         @keyframes fade-in-out {
           0% {
             opacity: 0;
