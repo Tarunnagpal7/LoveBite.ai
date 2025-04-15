@@ -206,7 +206,7 @@ export default function ProfileComplete() {
                           value={field.value}
                           className="grid gap-4"
                         >
-                          {["single", "in a relationship"].map((status) => (
+                          {["single"].map((status) => (
                             <FormItem key={status}>
                               <FormControl>
                                 <Button
