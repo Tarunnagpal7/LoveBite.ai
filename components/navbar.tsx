@@ -131,12 +131,17 @@ export default function Navbar() {
                     <span onClick={() => router.push('/pricing')}>Credits</span>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <Github className="mr-2 h-4 w-4" />
-                    <Link href='/https://github.com/Tarunnagpal7/LoveBite.ai'>
-                      <span>Github</span>
-                    </Link>
-                  </DropdownMenuItem>
+                     <a
+                      href="https://github.com/Tarunnagpal7/LoveBite.ai"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <DropdownMenuItem>
+                        <Github className="mr-2 h-4 w-4" />
+                        <span>Github</span>
+                      </DropdownMenuItem>
+                    </a>
+
                   <DropdownMenuItem 
                     className="text-red-600 focus:text-red-600 focus:bg-red-100"
                     onClick={handleSignOut}
