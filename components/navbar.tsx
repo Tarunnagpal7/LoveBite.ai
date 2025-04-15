@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Heart, Menu, LogOut, User, Settings, CreditCard } from "lucide-react";
+import { Heart, Menu, LogOut, User, Settings, CreditCard,Github} from "lucide-react";
 import Link from "next/link";
 import {
   DropdownMenu,
@@ -131,6 +131,12 @@ export default function Navbar() {
                     <span onClick={() => router.push('/pricing')}>Credits</span>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <Github className="mr-2 h-4 w-4" />
+                    <Link href='/https://github.com/Tarunnagpal7/LoveBite.ai'>
+                      <span>Github</span>
+                    </Link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem 
                     className="text-red-600 focus:text-red-600 focus:bg-red-100"
                     onClick={handleSignOut}
