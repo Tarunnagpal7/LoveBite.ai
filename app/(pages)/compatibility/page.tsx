@@ -400,6 +400,14 @@ export default function CompatibilityPage() {
 
   return (
     <div className="container mx-auto px-4 py-12 bg-gradient-to-b ">
+        <Alert className="mb-8">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Don't be mad 😅</AlertTitle>
+          <AlertDescription>
+            We're using <strong>Gemini</strong> for embedding magic ✨ to match compatibility — because we're still collecting data to train our own baby model 🤖. 
+            But hey... Gemini's almost always right. <strong>Bazinga!</strong> 😎
+          </AlertDescription>
+        </Alert>
       <Card className="max-w-2xl mx-auto shadow-lg border-primary/10 overflow-hidden">
         <CardHeader className="bg-primary/5 border-b border-primary/10">
           <CardTitle className="flex items-center gap-3 text-2xl">
