@@ -80,7 +80,7 @@ export default function CompatibilityResults() {
           // Fetch results first
           const testResults = await fetchTestResults();
           setResults(testResults);
-          console.log(testResults);
+          // console.log(testResults);
           
           // Then fetch relationship info
           const { relationshipId, relationship } = await fetchRelationshipInfo();
@@ -115,9 +115,7 @@ export default function CompatibilityResults() {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
         <Loading/>
-      </div>
     );
   }
 

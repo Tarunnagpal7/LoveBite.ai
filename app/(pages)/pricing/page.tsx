@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check, Sparkles, X, CreditCard } from "lucide-react";
+import { Check, Sparkles, X, CreditCard,AlertCircle} from "lucide-react";
 import LoadingWrapper from "@/components/LaodingWrapper";
 import axios from "axios";
 import Loading from "@/components/Loading";
@@ -12,6 +12,7 @@ import RazorpayPayment from "@/components/RazorpayHandler";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import ReactDOM from 'react-dom/client';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { PaymentSuccessUI, PaymentFailureUI } from "@/components/payment-UI";
 
 // Payment confirmation dialog component
@@ -197,6 +198,17 @@ export default function Pricing() {
               Select the perfect plan to unlock deeper relationship insights and enhance your journey with LoveBite.ai
             </p>
           </div>
+
+          <Alert className="mb-8">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>🎉 Verified... kinda!</AlertTitle>
+            <AlertDescription>
+              We’ve not been <strong>Razorpay verified</strong> as of <strong> now </strong> but we will soon ✅ — so the serious stuff is in place.  
+              <br />
+              Till then, enjoy the <strong>free plan</strong> and good vibes only 😎.
+            </AlertDescription>
+          </Alert>
+
 
           <div className="grid md:grid-cols-3 gap-8">
             {plans.map((plan) => (
