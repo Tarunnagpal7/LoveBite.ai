@@ -3,14 +3,14 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { RadioGroup } from "@/components/ui/radio-group";
 import { Heart, ArrowRight, ArrowLeft } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { profileSchema } from "@/schemas/profileSchema";
 import type { ProfileFormData } from "@/schemas/profileSchema";
 import axios from "axios";
@@ -32,9 +32,10 @@ export default function ProfileComplete() {
     defaultValues: {
       age: undefined,
       gender: undefined,
+      inRelation: undefined,
       zodiacSign: undefined,
     },
-    mode: "onChange",
+    mode: "onChange", // Add this to validate on change
   });
 
   const steps = [
@@ -42,6 +43,11 @@ export default function ProfileComplete() {
       title: "Basic Information",
       fields: ["age", "gender"],
       description: "Let's start with some basic information about you",
+    },
+    {
+      title: "Relationship Status",
+      fields: ["inRelation"],
+      description: "Tell us about your current relationship status",
     },
     {
       title: "Zodiac Sign",
@@ -82,7 +88,7 @@ export default function ProfileComplete() {
       
       if (response.data.success) {
         await update(); // Update the session with new profile data
-        router.push("/dashboard"); // Changed to match the useEffect check (was /pricing)
+        router.push("/pricing"); // Changed to /dashboard to match the useEffect check
       }
     } catch (error) {
       console.error("Error completing profile:", error);
@@ -140,9 +146,9 @@ export default function ProfileComplete() {
                             type="number"
                             placeholder="Enter your age"
                             {...field}
-                            value={field.value || ''}
+                            value={field.value || ''}  // Initialize with empty string if undefined
                             onChange={(e) => {
-                              const value = e.target.value ? parseInt(e.target.value) : undefined;
+                              const value = e.target.value ? parseInt(e.target.value) : '';
                               field.onChange(value);
                             }}
                           />
@@ -156,7 +162,7 @@ export default function ProfileComplete() {
                     control={form.control}
                     name="gender"
                     render={({ field }) => (
-                      <FormItem className="space-y-3">
+                      <FormItem>
                         <FormLabel>Gender</FormLabel>
                         <FormControl>
                           <RadioGroup
@@ -165,13 +171,17 @@ export default function ProfileComplete() {
                             className="grid grid-cols-2 gap-4"
                           >
                             {["male", "female"].map((gender) => (
-                              <FormItem key={gender} className="flex items-center space-x-2">
+                              <FormItem key={gender}>
                                 <FormControl>
-                                  <RadioGroupItem value={gender} id={gender} />
+                                  <Button
+                                    type="button"
+                                    variant={field.value === gender ? "default" : "outline"}
+                                    className="w-full"
+                                    onClick={() => field.onChange(gender)}
+                                  >
+                                    {gender.charAt(0).toUpperCase() + gender.slice(1)}
+                                  </Button>
                                 </FormControl>
-                                <FormLabel htmlFor={gender} className="cursor-pointer">
-                                  {gender.charAt(0).toUpperCase() + gender.slice(1)}
-                                </FormLabel>
                               </FormItem>
                             ))}
                           </RadioGroup>
@@ -186,6 +196,41 @@ export default function ProfileComplete() {
               {currentStep === 1 && (
                 <FormField
                   control={form.control}
+                  name="inRelation"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Relationship Status</FormLabel>
+                      <FormControl>
+                        <RadioGroup
+                          onValueChange={field.onChange}
+                          value={field.value}
+                          className="grid gap-4"
+                        >
+                          {["single", "in a relationship"].map((status) => (
+                            <FormItem key={status}>
+                              <FormControl>
+                                <Button
+                                  type="button"
+                                  variant={field.value === status ? "default" : "outline"}
+                                  className="w-full justify-start"
+                                  onClick={() => field.onChange(status)}
+                                >
+                                  {status.charAt(0).toUpperCase() + status.slice(1)}
+                                </Button>
+                              </FormControl>
+                            </FormItem>
+                          ))}
+                        </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+
+              {currentStep === 2 && (
+                <FormField
+                  control={form.control}
                   name="zodiacSign"
                   render={({ field }) => (
                     <FormItem>
@@ -194,16 +239,20 @@ export default function ProfileComplete() {
                         <RadioGroup
                           onValueChange={field.onChange}
                           value={field.value}
-                          className="grid grid-cols-3 gap-4"
+                          className="grid grid-cols-2 gap-4"
                         >
                           {zodiacSigns.map((sign) => (
-                            <FormItem key={sign} className="flex items-center space-x-2">
+                            <FormItem key={sign}>
                               <FormControl>
-                                <RadioGroupItem value={sign} id={sign} />
+                                <Button
+                                  type="button"
+                                  variant={field.value === sign ? "default" : "outline"}
+                                  className="w-full justify-start"
+                                  onClick={() => field.onChange(sign)}
+                                >
+                                  {sign}
+                                </Button>
                               </FormControl>
-                              <FormLabel htmlFor={sign} className="cursor-pointer">
-                                {sign}
-                              </FormLabel>
                             </FormItem>
                           ))}
                         </RadioGroup>
@@ -224,9 +273,6 @@ export default function ProfileComplete() {
                     <ArrowLeft className="mr-2 h-4 w-4" />
                     Back
                   </Button>
-                )}
-                {currentStep === 0 && (
-                  <div className="ml-auto" />
                 )}
                 {currentStep < steps.length - 1 ? (
                   <Button
