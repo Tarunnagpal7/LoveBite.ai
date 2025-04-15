@@ -32,7 +32,6 @@ export default function ProfileComplete() {
     defaultValues: {
       age: undefined,
       gender: undefined,
-      inRelation: undefined,
       zodiacSign: undefined,
     },
     mode: "onChange", // Add this to validate on change
@@ -43,11 +42,6 @@ export default function ProfileComplete() {
       title: "Basic Information",
       fields: ["age", "gender"],
       description: "Let's start with some basic information about you",
-    },
-    {
-      title: "Relationship Status",
-      fields: ["inRelation"],
-      description: "Tell us about your current relationship status",
     },
     {
       title: "Zodiac Sign",
@@ -193,42 +187,9 @@ export default function ProfileComplete() {
                 </>
               )}
 
-              {currentStep === 1 && (
-                <FormField
-                  control={form.control}
-                  name="inRelation"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Relationship Status</FormLabel>
-                      <FormControl>
-                        <RadioGroup
-                          onValueChange={field.onChange}
-                          value={field.value}
-                          className="grid gap-4"
-                        >
-                          {["single", "in a relationship"].map((status) => (
-                            <FormItem key={status}>
-                              <FormControl>
-                                <Button
-                                  type="button"
-                                  variant={field.value === status ? "default" : "outline"}
-                                  className="w-full justify-start"
-                                  onClick={() => field.onChange(status)}
-                                >
-                                  {status.charAt(0).toUpperCase() + status.slice(1)}
-                                </Button>
-                              </FormControl>
-                            </FormItem>
-                          ))}
-                        </RadioGroup>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              )}
+           
 
-              {currentStep === 2 && (
+              {currentStep === 1 && (
                 <FormField
                   control={form.control}
                   name="zodiacSign"
