@@ -56,7 +56,7 @@ export async function POST(request: Request) {
     console.log(`Estimated tokens: ~${estimatedTokens}`);
     
     // Use the correct model name
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro-exp-03-25" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     
     // Log before API call
     console.log(`Making API call to Gemini...`);
